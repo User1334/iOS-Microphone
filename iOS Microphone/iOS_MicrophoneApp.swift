@@ -2,7 +2,7 @@
 //  iOS_MicrophoneApp.swift
 //  iOS Microphone
 //
-//  Created by Lukas Berndt on 18.04.26.
+//  Created by User1337 on 18.04.26.
 //
 
 import SwiftUI
