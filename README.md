@@ -7,7 +7,7 @@ Use your iPhone as a microphone. Captures audio from the built-in mic and routes
 - One-tap mic passthrough (mic to speaker/headphones)
 - Works in the background and with the screen locked
 - Minimal latency using AVAudioEngine
-- Supports iOS 13+
+- Supports iOS 15+
 
 ## Requirements
 
