@@ -12,7 +12,7 @@ Use your iPhone as a microphone. Captures audio from the built-in mic and routes
 ## Requirements
 
 - Xcode 15+
-- iOS 13.0 or later
+- iOS 15.6 or later
 - A physical iOS device (microphone input is not available in the simulator)
 
 ## Setup
