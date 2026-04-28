@@ -15,6 +15,9 @@ final class AudioPassthroughManager {
     var isRunning = false { didSet { onStateChanged?() } }
     var micPermissionGranted = false { didSet { onStateChanged?() } }
     var errorMessage: String? { didSet { onStateChanged?() } }
+    var echoCancellationEnabled: Bool {
+        return UserDefaults.standard.bool(forKey: "echo_cancellation_enabled")
+    }
     var onStateChanged: (() -> Void)?
     
     // MARK: - Private
@@ -24,7 +27,22 @@ final class AudioPassthroughManager {
     // MARK: - Init
     
     init() {
+        UserDefaults.standard.register(defaults: ["echo_cancellation_enabled": false])
         checkMicPermission()
+        
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(defaultsChanged),
+            name: UserDefaults.didChangeNotification,
+            object: nil
+        )
+    }
+    
+    @objc private func defaultsChanged() {
+        if isRunning {
+            stop()
+            start()
+        }
     }
     
     // MARK: - Permissions
@@ -62,20 +80,17 @@ final class AudioPassthroughManager {
     
     private func configureAudioSession() throws {
         let session = AVAudioSession.sharedInstance()
+        let mode: AVAudioSession.Mode = echoCancellationEnabled ? .voiceChat : .default
         
-        // compiler(>=5) checks the real compiler version, not the language setting.
-        // On Xcode 11+: compiler is 5+, setCategory works in Swift.
-        // On Xcode 10:  compiler is 4.2, setCategory is unavailable in Swift (Apple bug),
-        //               so we call through an Objective-C helper.
         #if compiler(>=5)
         if #available(iOS 10.0, *) {
-            try session.setCategory(.playAndRecord, mode: .default, options: [.defaultToSpeaker, .allowBluetoothA2DP, .mixWithOthers])
+            try session.setCategory(.playAndRecord, mode: mode, options: [.defaultToSpeaker, .allowBluetoothA2DP, .mixWithOthers])
         } else {
             try session.setCategory(.playAndRecord)
             try session.overrideOutputAudioPort(.speaker)
         }
         #else
-        try AudioSessionHelper.setPlayAndRecordCategory()
+        try AudioSessionHelper.setPlayAndRecordCategory(withEchoCancellation: echoCancellationEnabled)
         #endif
         
         try session.setActive(true, options: [])

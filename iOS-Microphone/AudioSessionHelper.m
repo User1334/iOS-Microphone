@@ -3,10 +3,12 @@
 
 @implementation AudioSessionHelper
 
-+ (BOOL)setPlayAndRecordCategoryWithError:(NSError **)error {
++ (BOOL)setPlayAndRecordCategoryWithEchoCancellation:(BOOL)echoCancellation error:(NSError **)error {
     AVAudioSession *session = [AVAudioSession sharedInstance];
+    NSString *mode = echoCancellation ? AVAudioSessionModeVoiceChat : AVAudioSessionModeDefault;
     return [session setCategory:AVAudioSessionCategoryPlayAndRecord
-                    withOptions:AVAudioSessionCategoryOptionDefaultToSpeaker
+                           mode:mode
+                        options:AVAudioSessionCategoryOptionDefaultToSpeaker
                           error:error];
 }
 

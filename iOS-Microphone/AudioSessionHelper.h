@@ -1,5 +1,5 @@
 #import <Foundation/Foundation.h>
 
 @interface AudioSessionHelper : NSObject
-+ (BOOL)setPlayAndRecordCategoryWithError:(NSError **)error;
++ (BOOL)setPlayAndRecordCategoryWithEchoCancellation:(BOOL)echoCancellation error:(NSError **)error;
 @end

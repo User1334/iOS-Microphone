@@ -90,7 +90,7 @@ struct ContentView: View {
             
             Spacer()
             
-            Text("Audio is routed from the microphone to the speaker/headphones.")
+            Text("For best results, use headphones.\nEcho cancellation can be enabled in Settings.")
                 .font(.caption)
                 .foregroundColor(.secondary)
                 .multilineTextAlignment(.center)

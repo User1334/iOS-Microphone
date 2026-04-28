@@ -12,6 +12,7 @@
 		2A23F8552F9C8A6700CA10E2 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A23F8542F9C8A6700CA10E2 /* ContentView.swift */; };
 		2A23F8572F9C8A6800CA10E2 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A23F8562F9C8A6800CA10E2 /* SceneDelegate.swift */; };
 		2A23F85A2F9C8E8B00CA10E2 /* AudioSessionHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 2A23F8592F9C8E8B00CA10E2 /* AudioSessionHelper.m */; };
+		2AF37B902FA11E71000D8330 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 2AF37B8F2FA11E71000D8330 /* Settings.bundle */; };
 		E285F6352F9C86C100233E8D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E285F6342F9C86C100233E8D /* AppDelegate.swift */; };
 		E285F6372F9C86C100233E8D /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E285F6362F9C86C100233E8D /* ViewController.swift */; };
 		E285F63A2F9C86C100233E8D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E285F6382F9C86C100233E8D /* Main.storyboard */; };
@@ -27,6 +28,7 @@
 		2A23F8582F9C8E8A00CA10E2 /* AudioSessionHelper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AudioSessionHelper.h; sourceTree = "<group>"; };
 		2A23F8592F9C8E8B00CA10E2 /* AudioSessionHelper.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AudioSessionHelper.m; sourceTree = "<group>"; };
 		2A23F85B2F9C8E8C00CA10E2 /* iOS-Microphone-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "iOS-Microphone-Bridging-Header.h"; sourceTree = "<group>"; };
+		2AF37B8F2FA11E71000D8330 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
 		E285F6312F9C86C100233E8D /* iOS-Microphone.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "iOS-Microphone.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		E285F6342F9C86C100233E8D /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		E285F6362F9C86C100233E8D /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -50,6 +52,7 @@
 		E285F6282F9C86C100233E8D = {
 			isa = PBXGroup;
 			children = (
+				2AF37B8F2FA11E71000D8330 /* Settings.bundle */,
 				E285F6332F9C86C100233E8D /* iOS-Microphone */,
 				E285F6322F9C86C100233E8D /* Products */,
 			);
@@ -141,6 +144,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2AF37B902FA11E71000D8330 /* Settings.bundle in Resources */,
 				E285F63F2F9C86C200233E8D /* LaunchScreen.storyboard in Resources */,
 				E285F63C2F9C86C200233E8D /* Assets.xcassets in Resources */,
 				E285F63A2F9C86C100233E8D /* Main.storyboard in Resources */,
@@ -307,7 +311,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = 2L5Y862Y78;
 				INFOPLIST_FILE = "iOS-Microphone/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -326,7 +330,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = 2L5Y862Y78;
 				INFOPLIST_FILE = "iOS-Microphone/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = (

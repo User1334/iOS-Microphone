@@ -17,6 +17,7 @@ class LegacyViewController: UIViewController {
     private let titleLabel = UILabel()
     private let statusLabel = UILabel()
     private let toggleButton = UIButton(type: .system)
+    private let hintLabel = UILabel()
     private let errorLabel = UILabel()
     
     // MARK: - Lifecycle
@@ -36,6 +37,12 @@ class LegacyViewController: UIViewController {
         toggleButton.titleLabel?.font = UIFont.systemFont(ofSize: 20)
         toggleButton.addTarget(self, action: #selector(toggleTapped), for: .touchUpInside)
         
+        hintLabel.text = "For best results, use headphones.\nEcho cancellation can be enabled in Settings."
+        hintLabel.font = UIFont.systemFont(ofSize: 12)
+        hintLabel.textAlignment = .center
+        hintLabel.textColor = .gray
+        hintLabel.numberOfLines = 0
+        
         errorLabel.font = UIFont.systemFont(ofSize: 14)
         errorLabel.textAlignment = .center
         errorLabel.textColor = .red
@@ -44,6 +51,7 @@ class LegacyViewController: UIViewController {
         view.addSubview(titleLabel)
         view.addSubview(statusLabel)
         view.addSubview(toggleButton)
+        view.addSubview(hintLabel)
         view.addSubview(errorLabel)
         
         audioManager.onStateChanged = { [weak self] in
@@ -71,6 +79,9 @@ class LegacyViewController: UIViewController {
         
         let errorWidth = view.bounds.width - 40
         errorLabel.frame = CGRect(x: 20, y: centerY + 60, width: errorWidth, height: 60)
+        
+        let hintWidth = view.bounds.width - 40
+        hintLabel.frame = CGRect(x: 20, y: view.bounds.height - 80, width: hintWidth, height: 40)
     }
     
     // MARK: - Actions
