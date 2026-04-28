@@ -23,6 +23,7 @@ final class AudioPassthroughManager {
     // MARK: - Private
     
     private var audioEngine: AVAudioEngine?
+    private var stoppedByMuteSwitch = false
     
     // MARK: - Init
     
@@ -36,11 +37,50 @@ final class AudioPassthroughManager {
             name: UserDefaults.didChangeNotification,
             object: nil
         )
+        
+        observeMuteSwitch()
+    }
+    
+    deinit {
+        let center = CFNotificationCenterGetDarwinNotifyCenter()
+        CFNotificationCenterRemoveEveryObserver(center, Unmanaged.passUnretained(self).toOpaque())
     }
     
     @objc private func defaultsChanged() {
         if isRunning {
             stop()
+            start()
+        }
+    }
+    
+    // MARK: - Mute Switch
+    
+    private func observeMuteSwitch() {
+        let center = CFNotificationCenterGetDarwinNotifyCenter()
+        let observer = Unmanaged.passUnretained(self).toOpaque()
+        
+        CFNotificationCenterAddObserver(
+            center,
+            observer,
+            { _, observer, _, _, _ in
+                guard let observer = observer else { return }
+                let manager = Unmanaged<AudioPassthroughManager>.fromOpaque(observer).takeUnretainedValue()
+                DispatchQueue.main.async {
+                    manager.handleMuteSwitchChange()
+                }
+            },
+            "com.apple.springboard.ringerstate" as CFString,
+            nil,
+            .deliverImmediately
+        )
+    }
+    
+    private func handleMuteSwitchChange() {
+        if isRunning {
+            stoppedByMuteSwitch = true
+            stop()
+        } else if stoppedByMuteSwitch {
+            stoppedByMuteSwitch = false
             start()
         }
     }
