@@ -12,6 +12,24 @@
 		</dict>
 		<dict>
 			<key>Type</key>
+			<string>PSSliderSpecifier</string>
+			<key>Title</key>
+			<string>Microphone Gain</string>
+			<key>Key</key>
+			<string>microphone_gain</string>
+			<key>DefaultValue</key>
+			<real>1.0</real>
+			<key>MinimumValue</key>
+			<real>0.5</real>
+			<key>MaximumValue</key>
+			<real>10.0</real>
+			<key>MinimumValueTitle</key>
+			<string>0.5x</string>
+			<key>MaximumValueTitle</key>
+			<string>10x</string>
+		</dict>
+		<dict>
+			<key>Type</key>
 			<string>PSToggleSwitchSpecifier</string>
 			<key>Title</key>
 			<string>Echo Cancellation</string>

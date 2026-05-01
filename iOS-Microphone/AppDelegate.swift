@@ -15,7 +15,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         window = UIWindow(frame: UIScreen.main.bounds)
         
-        #if compiler(>=5.1)
+        #if (arch(arm64) || arch(x86_64)) && compiler(>=5.1) && canImport(SwiftUI)
         if #available(iOS 13.0, *) {
             window?.rootViewController = makeSwiftUIController()
         } else {
@@ -31,7 +31,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     // MARK: - Scene Lifecycle (iOS 13+)
     
-    #if compiler(>=5.1)
+    #if (arch(arm64) || arch(x86_64)) && compiler(>=5.1) && canImport(SwiftUI)
     @available(iOS 13.0, *)
     func application(_ application: UIApplication, configurationForConnecting connectingSceneSession: UISceneSession, options: UIScene.ConnectionOptions) -> UISceneConfiguration {
         let config = UISceneConfiguration(name: "Default", sessionRole: connectingSceneSession.role)

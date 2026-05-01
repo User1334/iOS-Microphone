@@ -6,7 +6,7 @@
 //  Excluded on Xcode 10 (compiler < 5.1) where SwiftUI does not exist.
 //
 
-#if compiler(>=5.1)
+#if (arch(arm64) || arch(x86_64)) && compiler(>=5.1) && canImport(SwiftUI)
 import UIKit
 import SwiftUI
 

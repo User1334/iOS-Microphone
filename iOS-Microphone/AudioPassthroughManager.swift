@@ -7,6 +7,7 @@
 //
 
 import AVFoundation
+import Accelerate
 
 final class AudioPassthroughManager {
     
@@ -23,24 +24,32 @@ final class AudioPassthroughManager {
     // MARK: - Private
     
     private var audioEngine: AVAudioEngine?
-    private var stoppedByMuteSwitch = false
-    
+    private var playerNode: AVAudioPlayerNode?
+    private var mutedBySwitch = false
+
     // MARK: - Init
-    
+
     init() {
-        UserDefaults.standard.register(defaults: ["echo_cancellation_enabled": false])
+        UserDefaults.standard.register(defaults: ["echo_cancellation_enabled": false, "microphone_gain": 1.0])
         checkMicPermission()
-        
+
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(defaultsChanged),
             name: UserDefaults.didChangeNotification,
             object: nil
         )
-        
+
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(audioRouteChanged),
+            name: AVAudioSession.routeChangeNotification,
+            object: nil
+        )
+
         observeMuteSwitch()
     }
-    
+
     deinit {
         let center = CFNotificationCenterGetDarwinNotifyCenter()
         CFNotificationCenterRemoveEveryObserver(center, Unmanaged.passUnretained(self).toOpaque())
@@ -50,6 +59,21 @@ final class AudioPassthroughManager {
         if isRunning {
             stop()
             start()
+        }
+    }
+
+    @objc private func audioRouteChanged(_ notification: Notification) {
+        guard let userInfo = notification.userInfo,
+              let reasonValue = userInfo[AVAudioSessionRouteChangeReasonKey] as? UInt else { return }
+        let reason = AVAudioSession.RouteChangeReason(rawValue: reasonValue) ?? .unknown
+        guard reason == .newDeviceAvailable || reason == .oldDeviceUnavailable else { return }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { [weak self] in
+            guard let self = self, self.isRunning || self.mutedBySwitch else { return }
+            let wasMuted = self.mutedBySwitch
+            self.stop()
+            if !wasMuted {
+                self.start()
+            }
         }
     }
     
@@ -76,13 +100,9 @@ final class AudioPassthroughManager {
     }
     
     private func handleMuteSwitchChange() {
-        if isRunning {
-            stoppedByMuteSwitch = true
-            stop()
-        } else if stoppedByMuteSwitch {
-            stoppedByMuteSwitch = false
-            start()
-        }
+        guard audioEngine != nil else { return }
+        mutedBySwitch = !mutedBySwitch
+        isRunning = !mutedBySwitch
     }
     
     // MARK: - Permissions
@@ -126,8 +146,7 @@ final class AudioPassthroughManager {
         if #available(iOS 10.0, *) {
             try session.setCategory(.playAndRecord, mode: mode, options: [.defaultToSpeaker, .allowBluetoothA2DP, .mixWithOthers])
         } else {
-            try session.setCategory(.playAndRecord)
-            try session.overrideOutputAudioPort(.speaker)
+            try session.setCategory(.playAndRecord, options: [.defaultToSpeaker])
         }
         #else
         try AudioSessionHelper.setPlayAndRecordCategory(withEchoCancellation: echoCancellationEnabled)
@@ -165,17 +184,28 @@ final class AudioPassthroughManager {
                 return
             }
             
-            let playerNode = AVAudioPlayerNode()
-            engine.attach(playerNode)
-            engine.connect(playerNode, to: engine.mainMixerNode, format: inputFormat)
-            
-            inputNode.installTap(onBus: 0, bufferSize: 1024, format: inputFormat) { buffer, _ in
-                playerNode.scheduleBuffer(buffer)
+            let player = AVAudioPlayerNode()
+            engine.attach(player)
+            engine.connect(player, to: engine.mainMixerNode, format: inputFormat)
+
+            inputNode.installTap(onBus: 0, bufferSize: 1024, format: inputFormat) { [weak self] buffer, _ in
+                guard self?.mutedBySwitch != true else { return }
+                var gain = UserDefaults.standard.float(forKey: "microphone_gain")
+                if gain < 0.1 { gain = 1.0 }
+                if gain != 1.0 {
+                    let frameCount = Int(buffer.frameLength)
+                    for ch in 0..<Int(buffer.format.channelCount) {
+                        guard let samples = buffer.floatChannelData?[ch] else { continue }
+                        vDSP_vsmul(samples, 1, &gain, samples, 1, vDSP_Length(frameCount))
+                    }
+                }
+                player.scheduleBuffer(buffer)
             }
-            
+
             try engine.start()
-            playerNode.play()
-            
+            player.play()
+
+            self.playerNode = player
             self.audioEngine = engine
             self.isRunning = true
         } catch {
@@ -185,11 +215,12 @@ final class AudioPassthroughManager {
     }
     
     func stop() {
+        mutedBySwitch = false
         audioEngine?.inputNode.removeTap(onBus: 0)
         audioEngine?.stop()
         audioEngine = nil
+        playerNode = nil
         isRunning = false
-        
         try? AVAudioSession.sharedInstance().setActive(false)
     }
     

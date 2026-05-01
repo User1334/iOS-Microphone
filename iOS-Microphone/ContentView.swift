@@ -6,7 +6,7 @@
 //  Excluded on Xcode 10 (compiler < 5.1) where SwiftUI does not exist.
 //
 
-#if compiler(>=5.1)
+#if (arch(arm64) || arch(x86_64)) && compiler(>=5.1) && canImport(SwiftUI)
 import SwiftUI
 import Combine
 
@@ -100,11 +100,11 @@ struct ContentView: View {
     }
 }
 
-#if compiler(>=5.9)
 @available(iOS 13.0, *)
-#Preview {
-    ContentView()
+struct ContentView_Previews: PreviewProvider {
+    static var previews: some View {
+        ContentView()
+    }
 }
-#endif
 
 #endif
