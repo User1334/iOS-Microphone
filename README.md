@@ -4,7 +4,7 @@ Turn your old iPhone into a wired microphone. Routes audio from the built-in mic
 
 ## Why?
 
-I wanted to use my old iPhone as a wired microphone for my Mac, because the phone had no other use. Useful for streaming, podcasting, or recording without buying a dedicated microphone — especially if you have an older iPhone with a 3.5mm jack lying around.
+I wanted to use my old iPhone as a wired microphone for my computers, because the phone had no other use. Useful for streaming, podcasting, or recording without buying a dedicated microphone — especially if you have an older iPhone with a 3.5mm jack lying around.
 
 ## Features
 
